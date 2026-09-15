@@ -269,6 +269,6 @@ Contributions are welcome! Please open an issue or submit a pull request.
 ---
 
 <p align="center">
-  Built with 🚀 for NASA internship applications<br/>
+  <br/>
   Powered by <a href="https://earthdata.nasa.gov/">NASA Earthdata</a> & <a href="https://github.com/phelber/eurosat">EuroSAT</a>
 </p>
