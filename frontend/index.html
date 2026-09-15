@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satellite Imagery Analyzer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>🛰️ Satellite Imagery Analyzer</h1>
+            <p>Advanced Earth Observation & ML Insights</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tabs">
+            <button class="tab-btn active" data-target="classify">Classification</button>
+            <button class="tab-btn" data-target="ndvi">NDVI Analysis</button>
+            <button class="tab-btn" data-target="change">Change Detection</button>
+        </div>
+
+        <!-- Classify Tab -->
+        <section id="classify" class="tab-content active">
+            <div class="grid-2">
+                <div class="card">
+                    <h2>Upload Image</h2>
+                    <p class="subtitle">Upload a 64x64 EuroSAT satellite image for land-cover classification.</p>
+                    
+                    <div class="drop-zone" id="classify-drop">
+                        <span class="drop-zone-prompt">Drag & Drop image or Click to upload</span>
+                        <input type="file" name="file" class="drop-zone-input" accept="image/*">
+                        <img class="preview-img" style="display: none;" />
+                    </div>
+                    <button id="btn-classify" class="btn primary-btn mt-4" disabled>Classify Image</button>
+                    <div id="classify-error" class="error-msg"></div>
+                </div>
+
+                <div class="card">
+                    <h2>Classification Results</h2>
+                    <div id="classify-loading" class="loading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Analyzing imagery...</p>
+                    </div>
+                    
+                    <div id="classify-results" style="display: none;">
+                        <div class="result-header">
+                            <span class="result-label">Predicted Class</span>
+                            <span id="classify-pred" class="result-value"></span>
+                        </div>
+                        <div class="result-header">
+                            <span class="result-label">Confidence</span>
+                            <span id="classify-conf" class="result-value"></span>
+                        </div>
+                        
+                        <h3 class="mt-4">Probabilities</h3>
+                        <div id="prob-chart" class="chart-container">
+                            <!-- Bars injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NDVI Tab -->
+        <section id="ndvi" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h2>Vegetation Index (NDVI)</h2>
+                    <p class="subtitle">Upload NIR (Near-Infrared) and Red band images to calculate vegetation health.</p>
+                    
+                    <div class="upload-group">
+                        <div class="drop-zone small" id="nir-drop">
+                            <span class="drop-zone-prompt">NIR Band</span>
+                            <input type="file" name="nir" class="drop-zone-input" accept="image/*">
+                            <img class="preview-img" style="display: none;" />
+                        </div>
+                        <div class="drop-zone small" id="red-drop">
+                            <span class="drop-zone-prompt">Red Band</span>
+                            <input type="file" name="red" class="drop-zone-input" accept="image/*">
+                            <img class="preview-img" style="display: none;" />
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group mt-4">
+                        <button id="btn-ndvi" class="btn primary-btn" disabled>Calculate NDVI</button>
+                        <button id="btn-ndvi-demo" class="btn secondary-btn">Use Demo Data</button>
+                    </div>
+                    <div id="ndvi-error" class="error-msg"></div>
+                </div>
+
+                <div class="card">
+                    <h2>NDVI Results</h2>
+                    <div id="ndvi-loading" class="loading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Computing indices...</p>
+                    </div>
+                    
+                    <div id="ndvi-results" style="display: none;">
+                        <div class="map-container">
+                            <img id="ndvi-heatmap" src="" alt="NDVI Heatmap" />
+                        </div>
+                        <h3 class="mt-4">Area Statistics</h3>
+                        <table class="stats-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Coverage (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ndvi-stats-body">
+                                <!-- Stats injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Change Detection Tab -->
+        <section id="change" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h2>Change Detection</h2>
+                    <p class="subtitle">Upload 'Before' and 'After' observations to map environmental changes.</p>
+                    
+                    <div class="upload-group">
+                        <div class="drop-zone small" id="before-drop">
+                            <span class="drop-zone-prompt">Before Image</span>
+                            <input type="file" name="before" class="drop-zone-input" accept="image/*">
+                            <img class="preview-img" style="display: none;" />
+                        </div>
+                        <div class="drop-zone small" id="after-drop">
+                            <span class="drop-zone-prompt">After Image</span>
+                            <input type="file" name="after" class="drop-zone-input" accept="image/*">
+                            <img class="preview-img" style="display: none;" />
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group mt-4">
+                        <button id="btn-change" class="btn primary-btn" disabled>Detect Changes</button>
+                        <button id="btn-change-demo" class="btn secondary-btn">Use Demo Data</button>
+                    </div>
+                    <div id="change-error" class="error-msg"></div>
+                </div>
+
+                <div class="card">
+                    <h2>Change Map</h2>
+                    <div id="change-loading" class="loading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Analyzing temporal changes...</p>
+                    </div>
+                    
+                    <div id="change-results" style="display: none;">
+                        <div class="map-container">
+                            <img id="change-map" src="" alt="Change Map" />
+                        </div>
+                        <h3 class="mt-4">Change Statistics</h3>
+                        <table class="stats-table">
+                            <thead>
+                                <tr>
+                                    <th>Classification</th>
+                                    <th>Area (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="change-stats-body">
+                                <!-- Stats injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Powered by NASA Satellite Data | <a href="#" class="github-link">GitHub Repository</a></p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
